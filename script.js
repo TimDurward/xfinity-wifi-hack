@@ -2,14 +2,14 @@ var CronJob = require('cron').CronJob;
 var CMD     = require('node-CMD');
 var CON     = require('wifi-control');
 
-
+//CHANGE SSID FOR PREFERED WIFI
+var SSID = "xfinitywifi";
 CON.init({
     debug: true
 });
 
-//CHANGE SSID FOR PREFERED WIFI
 var _ap = {
-    ssid: "xfinitywifi",
+    ssid: SSID ,
 };
 
 
