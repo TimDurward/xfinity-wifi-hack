@@ -1,0 +1,19 @@
+{
+  "name": "wifi-hack",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cron": "^1.1.1",
+    "minimist": "^1.2.0",
+    "node-cmd": "^1.1.1",
+    "node-cron": "^1.1.2",
+    "spoof": "^1.1.0",
+    "wifi-control": "^2.0.0"
+  }
+}
