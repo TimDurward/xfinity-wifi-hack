@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "async": "^2.1.2",
+    "chance": "^1.0.4",
     "cron": "^1.1.1",
     "node-cmd": "^1.1.1",
     "wifi-control": "^2.0.0"
