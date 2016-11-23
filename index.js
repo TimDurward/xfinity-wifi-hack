@@ -1,9 +1,9 @@
-var CronJob    = require('cron').CronJob;
-var CMD        = require('node-cmd');
-var CON        = require('wifi-control');
-var async      = require('async');
-var Nightmare  = require('nightmare');
-var macaddress = require('macaddress');
+var CronJob     = require('cron').CronJob;
+var CMD         = require('node-cmd');
+var CON         = require('wifi-control');
+var async       = require('async');
+var Nightmare   = require('nightmare');
+var macaddress  = require('macaddress');
 
 //Globals
 //***************************************************************************
@@ -18,20 +18,22 @@ var SSID = "xfinitywifi";
 //Can be found in Terminal using command:
 //Linux: iwconfig
 //Mac: ifconfig
-var DRIVER_INTERFACE = "wlo1";
+var DRIVER_INTERFACE = "en0";
 
+//CRON TIMEZONE
 var TIME_ZONE = 'America/Los_Angeles'
 //****************************************************************************
 
 //Settings:
 //**************
-//Debug:   Verbose Mode - Uncomment for Silent Logs
+//Debug:   Verbose Mode - set FALSE for Silent Logs (preferred) 
 //iface:   Set your WNIC or comment out to automatically find Interface
-//Timeout: The length of time before trying reconnection - Uncomment to be endless
+//Timeout: The length of time before trying reconnection --
+//This can be handy to change if you have reduced resources or slow WNIC chipset
 var CON_SETTINGS = {
-  debug: true,
-  iface: DRIVER_INTERFACE,
-  ConnectionTimeout: 10000 // in ms
+    debug: true,
+    iface: DRIVER_INTERFACE,
+    ConnectionTimeout: 10000 // in ms
 }
 
 //Initiate Settings
@@ -40,7 +42,6 @@ CON.configure(CON_SETTINGS);
 
 
 //Optional Password for Router
-//Some Xfinity Routers will require password (Ucomment Below if this is the case)
 var _ap = {
     ssid: SSID,
     // password: "Optional"
@@ -66,28 +67,28 @@ function counter() {
 
 
 function refreshInterface(callback) {
-  CON.resetWiFi( function(err, response) {
-    if (err) console.log(err);
-  console.log("Driver Interface Restarted Succcessfully...")
-  callback(null);
-});
+    CON.resetWiFi(function (err, response) {
+        if (err) console.log(err);
+        console.log("Driver Interface Restarted Succcessfully...")
+        callback(null);
+    });
 }
 
 function spoofAdr(callback) {
 
     console.log("Spoofing " + DRIVER_INTERFACE + "'s Mac Address...");
-    setTimeout(function() {
-      CMD.get(
-    'sudo spoof randomize ' + DRIVER_INTERFACE,
-    function (data) {
-        macaddress.one(DRIVER_INTERFACE, function (err, mac) {
-          console.log("Generated temporary Mac address for " + DRIVER_INTERFACE + ": %s", mac);
-          var macAdr = mac;
-          callback(null, macAdr);
-        });
-    }
-  );
-}, 15000);
+    setTimeout(function () {
+        CMD.get(
+            'sudo spoof randomize ' + DRIVER_INTERFACE,
+            function (data) {
+                macaddress.one(DRIVER_INTERFACE, function (err, mac) {
+                    console.log("Generated temporary Mac address for " + DRIVER_INTERFACE + ": %s", mac);
+                    var macAdr = mac;
+                    callback(null, macAdr);
+                });
+            }
+        );
+    }, 15000);
 }
 
 
