@@ -1,6 +1,6 @@
 var CronJob     = require('cron').CronJob;
 var CMD         = require('node-cmd');
-var CON         = require('wifi-control');
+var CONN         = require('wifi-control');
 var async       = require('async');
 var Nightmare   = require('nightmare');
 var macaddress  = require('macaddress');
@@ -32,14 +32,14 @@ var TIME_ZONE = 'America/Los_Angeles'
 //iface:   Set your WNIC or comment out to automatically find Interface
 //Timeout: The length of time before trying reconnection --
 //This can be handy to change if you have reduced resources or slow WNIC chipset
-var CON_SETTINGS = {
+var CONN_SETTINGS = {
     debug: true,
     iface: DRIVER_INTERFACE,
     ConnectionTimeout: 10000 // in ms
 }
 
 //Initiate Settings
-CON.configure(CON_SETTINGS);
+CONN.configure(CONN_SETTINGS);
 
 
 
@@ -69,7 +69,7 @@ function counter() {
 
 
 function refreshInterface(callback) {
-    CON.resetWiFi(function (err, response) {
+    CONN.resetWiFi(function (err, response) {
         if (err) console.log(err);
         console.log("Driver Interface Restarted Succcessfully...")
         callback(null);
@@ -96,7 +96,7 @@ function spoofAdr(callback) {
 
 function ssidConnect(macAdr, callback) {
     console.log("Reconnecting to SSID: " + SSID + "...");
-    var results = CON.connectToAP(_ap, function (err, response) {
+    var results = CONN.connectToAP(_ap, function (err, response) {
         if (err) console.log(err);
         console.log("Handshake Succcess with: " + SSID);
         callback(null, macAdr);
