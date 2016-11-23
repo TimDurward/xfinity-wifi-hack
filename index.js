@@ -6,16 +6,22 @@ var Nightmare  = require('nightmare');
 var macaddress = require('macaddress');
 
 //Globals
-var TIME_ZONE = 'America/Los_Angeles'
+//***************************************************************************
+//SET TRUE to run in Headless Environments. i.e Vagrant/Docker
+//SET FALSE to run in reguar Environments - Or leave as true.
+var RUN_HEADLESS = true
 
 //CHANGE SSID FOR PREFERED WIFI
 var SSID = "xfinitywifi";
 
-// The name of your Wireless Interface Controller (WNIC).
+//Wireless Interface Controller (WNIC).
 //Can be found in Terminal using command:
 //Linux: iwconfig
 //Mac: ifconfig
 var DRIVER_INTERFACE = "wlo1";
+
+var TIME_ZONE = 'America/Los_Angeles'
+//****************************************************************************
 
 //Settings:
 //**************
@@ -59,10 +65,15 @@ function counter() {
 }
 
 
+function refreshInterface(callback) {
+  CON.resetWiFi( function(err, response) {
+    if (err) console.log(err);
+  console.log("Driver Interface Restarted Succcessfully...")
+  callback(null);
+});
+}
+
 function spoofAdr(callback) {
-    // CON.resetWiFi( function(err, response) {
-    //   if (err) console.log(err);
-    // console.log(response);
 
     console.log("Spoofing " + DRIVER_INTERFACE + "'s Mac Address...");
     setTimeout(function() {
@@ -76,10 +87,7 @@ function spoofAdr(callback) {
         });
     }
   );
-}, 1000);
-
-    // } );
-
+}, 15000);
 }
 
 
@@ -87,8 +95,7 @@ function ssidConnect(macAdr, callback) {
     console.log("Reconnecting to SSID: " + SSID + "...");
     var results = CON.connectToAP(_ap, function (err, response) {
         if (err) console.log(err);
-        // console.log(response.msg);
-        console.log("This is coming from spoof frominside ssid: " + macAdr);
+        console.log("Handshake Succcess with: " + SSID);
         callback(null, macAdr);
     });
 }
@@ -97,7 +104,7 @@ function ssidConnect(macAdr, callback) {
 function automateXfinityGui(macAdr) {
     console.log("Automating Xfinity UI...");
     //Instantiate Selenium
-    var nightmare = Nightmare({ show: true });
+    var nightmare = Nightmare({ show: !RUN_HEADLESS });
     //Begin Traversing
     nightmare
         .goto('https://wifilogin.comcast.net/wifi/start.php?bn=st01&tm=xfw01&cm=' + macAdr)
@@ -118,7 +125,7 @@ function automateXfinityGui(macAdr) {
         .wait(20000)
         .end()
         .then(function (result) {
-            console.log(result)
+            console.log("Success. Connection Establshed.");
         })
         .catch(function (error) {
             console.error('Search failed:', error);
@@ -134,6 +141,8 @@ var job = new CronJob({
         console.log('Establishing Connection...');
         //Run Async tasks in sequence
         async.waterfall([
+            //Disconnect WiFi Interface
+            refreshInterface,
             //Send global spoof CMD
             spoofAdr,
             //Reconnecting to WiFi SSID
