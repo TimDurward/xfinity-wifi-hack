@@ -4,6 +4,8 @@ var CON         = require('wifi-control');
 var async       = require('async');
 var Nightmare   = require('nightmare');
 var macaddress  = require('macaddress');
+var Chance      = require('chance');
+
 
 //Globals
 //***************************************************************************
@@ -104,6 +106,12 @@ function ssidConnect(macAdr, callback) {
 
 function automateXfinityGui(macAdr) {
     console.log("Automating Xfinity UI...");
+    //Building Xfinity Profile
+    var chance = new Chance();
+    //Generate Email
+    var USER_EMAIL = chance.email();
+    //Generate Zip
+    var USER_ZIP = chance.zip();
     //Instantiate Selenium
     var nightmare = Nightmare({ show: !RUN_HEADLESS });
     //Begin Traversing
@@ -116,9 +124,9 @@ function automateXfinityGui(macAdr) {
         .wait(10000)
         .select('#rateplanid', 'spn')
         .wait(500)
-        .insert('#spn_postal', '90001')
+        .insert('#spn_postal', USER_ZIP)
         .wait(500)
-        .insert('#spn_email', 'test@gmail.com')
+        .insert('#spn_email', USER_EMAIL)
         .wait(500)
         .check('#spn_terms')
         .wait(500)
