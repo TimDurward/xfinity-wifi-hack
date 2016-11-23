@@ -17,6 +17,9 @@
     "wifi-control": "^2.0.0"
   },
   "devDependencies": {
-    "nightmare": "^2.8.1"
+    "macaddress": "^0.2.8",
+    "nightmare": "^2.8.1",
+    "wifi-control": "^2.0.0",
+    "wireless": "^0.3.2"
   }
 }
